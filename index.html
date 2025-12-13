@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjetOptiV3 - Optimization & ML</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header>
+        <h1>ProjetOptiV3</h1>
+        <p>December 12, 2025 | Charles Pilleur, Ancco Jhonatan</p>
+    </header>
+
+    <section id="intro">
+        <h2>Multiclass Classification of UCI HAR Dataset</h2>
+        <p>This project focuses on optimizing a multiclass classifier using Forward-Backward and ADMM algorithms.</p>
+        <p><strong>Dataset:</strong> <a href="https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones">UCI HAR</a></p>
+    </section>
+
+    <section id="formulation">
+        <h2>Optimization Formulation</h2>
+        <p>
+            \[
+            \min_{x \in \mathbb{R}^{(M+1)K}} g(x) + \lambda h(x)
+            \]
+        </p>
+        <!-- More math here -->
+    </section>
+
+    <section id="results">
+        <h2>Results</h2>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>Accuracy</th>
+            </tr>
+            <tr>
+                <td>Forward-Backward</td>
+                <td>89.75%</td>
+            </tr>
+            <tr>
+                <td>ADMM</td>
+                <td>88.70%</td>
+            </tr>
+        </table>
+    </section>
+
+    <footer>
+        <p>View the full project on <a href="https://github.com/your-username/ProjetOptiV3">GitHub</a>.</p>
+    </footer>
+</body>
+</html>
