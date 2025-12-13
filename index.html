@@ -3,53 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProjetOptiV3 - Optimization & ML</title>
+    <title>ProjetOptiV3 - Optimization & Machine Learning</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <header>
-        <h1>ProjetOptiV3</h1>
-        <p>December 12, 2025 | Charles Pilleur, Ancco Jhonatan</p>
+        <nav>
+            <div class="nav-container">
+                <h1 class="logo">ProjetOptiV3</h1>
+                <ul class="nav-links">
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#dataset">Dataset</a></li>
+                    <li><a href="#formulation">Formulation</a></li>
+                    <li><a href="#methods">Methods</a></li>
+                    <li><a href="#results">Results</a></li>
+                    <li><a href="#code">Code</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="hero">
+            <h1>Multiclass Classification with Optimization Methods</h1>
+            <p>Human Activity Recognition using Smartphones</p>
+            <p class="authors">Charles Pilleur & Ancco Jhonatan | December 2025</p>
+        </div>
     </header>
 
-    <section id="intro">
-        <h2>Multiclass Classification of UCI HAR Dataset</h2>
-        <p>This project focuses on optimizing a multiclass classifier using Forward-Backward and ADMM algorithms.</p>
-        <p><strong>Dataset:</strong> <a href="https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones">UCI HAR</a></p>
-    </section>
+    <main>
+        <section id="overview" class="section">
+            <div class="container">
+                <h2><i class="fas fa-project-diagram"></i> Project Overview</h2>
+                <p>This project implements and compares optimization algorithms for multiclass classification on the UCI Human Activity Recognition dataset. We explore Forward-Backward splitting and ADMM methods with L1 regularization.</p>
+                
+                <div class="features">
+                    <div class="feature-card">
+                        <i class="fas fa-brain"></i>
+                        <h3>Machine Learning</h3>
+                        <p>Multiclass classification with 6 activity types</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-calculator"></i>
+                        <h3>Optimization</h3>
+                        <p>Forward-Backward and ADMM algorithms</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Performance</h3>
+                        <p>Comparison of accuracy and convergence</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <section id="formulation">
-        <h2>Optimization Formulation</h2>
-        <p>
-            \[
-            \min_{x \in \mathbb{R}^{(M+1)K}} g(x) + \lambda h(x)
-            \]
-        </p>
-        <!-- More math here -->
-    </section>
+        <section id="dataset" class="section bg-light">
+            <div class="container">
+                <h2><i class="fas fa-database"></i> Dataset</h2>
+                <p>The <strong>UCI HAR Dataset</strong> contains recordings from 30 volunteers (19-48 years) performing 6 activities:</p>
+                
+                <div class="activities">
+                    <span class="activity-tag">WALKING</span>
+                    <span class="activity-tag">WALKING_UPSTAIRS</span>
+                    <span class="activity-tag">WALKING_DOWNSTAIRS</span>
+                    <span class="activity-tag">SITTING</span>
+                    <span class="activity-tag">STANDING</span>
+                    <span class="activity-tag">LAYING</span>
+                </div>
+                
+                <div class="dataset-info">
+                    <div class="info-card">
+                        <h4>Data Structure</h4>
+                        <ul>
+                            <li><strong>Training samples:</strong> 7,352</li>
+                            <li><strong>Test samples:</strong> 2,947</li>
+                            <li><strong>Features:</strong> 561</li>
+                            <li><strong>Classes:</strong> 6</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>Sensor Data</h4>
+                        <ul>
+                            <li>Triaxial acceleration</li>
+                            <li>Estimated body acceleration</li>
+                            <li>Triaxial angular velocity</li>
+                            <li>Time/frequency domain variables</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <a href="https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones" class="btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Access Dataset
+                </a>
+            </div>
+        </section>
 
-    <section id="results">
-        <h2>Results</h2>
-        <table>
-            <tr>
-                <th>Method</th>
-                <th>Accuracy</th>
-            </tr>
-            <tr>
-                <td>Forward-Backward</td>
-                <td>89.75%</td>
-            </tr>
-            <tr>
-                <td>ADMM</td>
-                <td>88.70%</td>
-            </tr>
-        </table>
-    </section>
+        <section id="formulation" class="section">
+            <div class="container">
+                <h2><i class="fas fa-square-root-alt"></i> Optimization Formulation</h2>
+                
+                <div class="formulation-card">
+                    <h3>Main Problem</h3>
+                    <div class="math-formula">
+                        \[
+                        \min_{x \in \mathbb{R}^{(M+1)K}} g(x) + \lambda h(x)
+                        \]
+                    </div>
+                    
+                    <div class="formula-details">
+                        <div class="detail">
+                            <h4>Loss Function \(h(x)\):</h4>
+                            \[
+                            h(x) = \sum_{\ell=1}^{L} \log \left( 1 + \sum_{k \neq \ell} \exp [\mu_\ell + \varphi(u_\ell)^T (x^{(k)} - x^{(z_\ell)})] \right)
+                            \]
+                        </div>
+                        
+                        <div class="detail">
+                            <h4>Regularization \(g(x)\):</h4>
+                            \[
+                            g(x) = \sum_{k=1}^{K} \| w^{(k)} \|_1
+                            \]
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="formulation-card">
+                    <h3>ADMM Reformulation</h3>
+                    <div class="math-formula">
+                        \[
+                        \min_{x,z} \lambda h(x) + g(z) \quad \text{s.t.} \quad x - z = 0
+                        \]
+                    </div>
+                    
+                    <div class="detail">
+                        <h4>Augmented Lagrangian:</h4>
+                        \[
+                        \mathcal{L}_{\rho}(x, z, u) = \lambda h(x) + g(z) + u^T(x - z) + \frac{\rho}{2}\|x - z\|_2^2
+                        \]
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="methods" class="section bg-light">
+            <div class="container">
+                <h2><i class="fas fa-code-branch"></i> Methods</h2>
+                
+                <div class="methods-grid">
+                    <div class="method-card">
+                        <div class="method-header">
+                            <i class="fas fa-forward"></i>
+                            <h3>Forward-Backward Algorithm</h3>
+                        </div>
+                        <p>Solves problems of the form:</p>
+                        <p class="math-inline">\(\min_x f(x) + g(x)\)</p>
+                        <ul>
+                            <li><strong>Step 1:</strong> Gradient descent on \(f(x)\)</li>
+                            <li><strong>Step 2:</strong> Proximal operator on \(g(x)\)</li>
+                            <li><strong>Parameters:</strong> \(\tau < \frac{2}{L_f}\)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="method-card">
+                        <div class="method-header">
+                            <i class="fas fa-exchange-alt"></i>
+                            <h3>ADMM Algorithm</h3>
+                        </div>
+                        <p>Alternating Direction Method of Multipliers:</p>
+                        <ul>
+                            <li><strong>Step 1:</strong> Update \(x\) (smooth minimization)</li>
+                            <li><strong>Step 2:</strong> Update \(z\) (proximal operator)</li>
+                            <li><strong>Step 3:</strong> Update multiplier \(u\)</li>
+                            <li><strong>Parameter:</strong> \(\rho > 0\)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="results" class="section">
+            <div class="container">
+                <h2><i class="fas fa-chart-bar"></i> Results</h2>
+                
+                <div class="results-summary">
+                    <div class="result-card highlight">
+                        <h3>Forward-Backward</h3>
+                        <div class="accuracy">89.75%</div>
+                        <p>Test Accuracy</p>
+                        <div class="result-details">
+                            <p><strong>Objective:</strong> 475.08</p>
+                            <p><strong>Iterations:</strong> ~900</p>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>ADMM</h3>
+                        <div class="accuracy">88.70%</div>
+                        <p>Test Accuracy</p>
+                        <div class="result-details">
+                            <p><strong>Objective:</strong> ~694.81</p>
+                            <p><strong>Iterations:</strong> 200</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="confusion-matrix">
+                    <h3>Forward-Backward Confusion Matrix</h3>
+                    <div class="matrix-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>1</th>
+                                    <th>2</th>
+                                    <th>3</th>
+                                    <th>4</th>
+                                    <th>5</th>
+                                    <th>6</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="row-label">1</td>
+                                    <td class="correct">328</td><td>1</td><td>31</td><td>0</td><td>0</td><td>0</td>
+                                </tr>
+                                <tr>
+                                    <td class="row-label">2</td>
+                                    <td>9</td><td class="correct">284</td><td>20</td><td>0</td><td>0</td><td>0</td>
+                                </tr>
+                                <tr>
+                                    <td class="row-label">3</td>
+                                    <td>7</td><td>9</td><td class="correct">260</td><td>0</td><td>0</td><td>0</td>
+                                </tr>
+                                <tr>
+                                    <td class="row-label">4</td>
+                                    <td>0</td><td>2</td><td>0</td><td class="correct">252</td><td>76</td><td>0</td>
+                                </tr>
+                                <tr>
+                                    <td class="row-label">5</td>
+                                    <td>0</td><td>0</td><td>0</td><td>43</td><td class="correct">314</td><td>0</td>
+                                </tr>
+                                <tr>
+                                    <td class="row-label">6</td>
+                                    <td>0</td><td>0</td><td>0</td><td>0</td><td>7</td><td class="correct">357</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="caption">Classes: 1=Walking, 2=Upstairs, 3=Downstairs, 4=Sitting, 5=Standing, 6=Laying</p>
+                </div>
+                
+                <div class="weights-analysis">
+                    <h3>Non-zero Weights Analysis</h3>
+                    <div class="weights-grid">
+                        <div class="weight-item">
+                            <span class="class-name">Class 1 (Walking)</span>
+                            <div class="weight-bar">
+                                <div class="weight-fill" style="width: 64.7%">363/561 (64.7%)</div>
+                            </div>
+                        </div>
+                        <div class="weight-item">
+                            <span class="class-name">Class 2 (Upstairs)</span>
+                            <div class="weight-bar">
+                                <div class="weight-fill" style="width: 67.0%">376/561 (67.0%)</div>
+                            </div>
+                        </div>
+                        <div class="weight-item">
+                            <span class="class-name">Class 3 (Downstairs)</span>
+                            <div class="weight-bar">
+                                <div class="weight-fill" style="width: 66.7%">374/561 (66.7%)</div>
+                            </div>
+                        </div>
+                        <div class="weight-item">
+                            <span class="class-name">Class 4 (Sitting)</span>
+                            <div class="weight-bar">
+                                <div class="weight-fill" style="width: 44.4%">249/561 (44.4%)</div>
+                            </div>
+                        </div>
+                        <div class="weight-item">
+                            <span class="class-name">Class 5 (Standing)</span>
+                            <div class="weight-bar">
+                                <div class="weight-fill" style="width: 63.5%">356/561 (63.5%)</div>
+                            </div>
+                        </div>
+                        <div class="weight-item">
+                            <span class="class-name">Class 6 (Laying)</span>
+                            <div class="weight-bar">
+                                <div class="weight-fill" style="width: 52.9%">297/561 (52.9%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="code" class="section bg-light">
+            <div class="container">
+                <h2><i class="fas fa-code"></i> Code & Implementation</h2>
+                
+                <div class="code-links">
+                    <a href="ProjectOptV3.ipynb" class="code-card">
+                        <i class="fab fa-python"></i>
+                        <h3>Jupyter Notebook</h3>
+                        <p>Complete implementation with all algorithms</p>
+                    </a>
+                    
+                    <a href="https://github.com/JhAnCe25/ProjetOptiV3" class="code-card" target="_blank">
+                        <i class="fab fa-github"></i>
+                        <h3>GitHub Repository</h3>
+                        <p>Source code and project files</p>
+                    </a>
+                </div>
+                
+                <div class="code-snippet">
+                    <h3>Key Implementation</h3>
+                    <pre><code class="language-python">def forward_backward_algorithm(x0, X_train, y_train, lambda_reg, 
+                              tau, mu=1.0, max_iter=1000):
+    """Forward-Backward algorithm for multiclass classification"""
+    x = x0.copy()
+    for iteration in range(max_iter):
+        # Gradient step
+        grad = h_loss_gradient_vectorized(x, X_train, y_train, mu)
+        Z = x - tau * lambda_reg * grad
+        
+        # Proximal step (soft-thresholding)
+        x = prox_soft_thresholding(Z, N, tau * lambda_reg)
+        
+        # Convergence check
+        if np.linalg.norm(x - x_old) < 1e-6:
+            break
+    return x</code></pre>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer>
-        <p>View the full project on <a href="https://github.com/your-username/ProjetOptiV3">GitHub</a>.</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ProjetOptiV3</h3>
+                    <p>Optimization Methods for Machine Learning</p>
+                    <p>Université Paris-Saclay</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Team</h3>
+                    <ul>
+                        <li>Charles Pilleur</li>
+                        <li>Ancco Jhonatan</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Links</h3>
+                    <ul>
+                        <li><a href="ProjectOptV3.ipynb">Download Notebook</a></li>
+                        <li><a href="https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones">Dataset</a></li>
+                        <li><a href="#formulation">Mathematical Formulation</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 ProjetOptiV3. All rights reserved.</p>
+                <p>Last updated: December 2025</p>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Update active nav link on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if(scrollY >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
