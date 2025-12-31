@@ -1,416 +1,678 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProjetOptiV3 - Optimization & Machine Learning</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Projet d'Optimisation et Machine Learning - UCI HAR Classifier</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --success: #2ecc71;
+            --warning: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 5px solid var(--accent);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .authors {
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        
+        section {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            color: var(--dark);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.4rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .highlight {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .results-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .result-card {
+            flex: 1;
+            min-width: 300px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-top: 4px solid var(--secondary);
+        }
+        
+        .result-card h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .metric-name {
+            font-weight: 600;
+        }
+        
+        .metric-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table th {
+            background-color: var(--light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .confusion-matrix {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            margin: 1.5rem 0;
+            background-color: #ddd;
+            border: 1px solid #ddd;
+        }
+        
+        .confusion-cell {
+            background-color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .confusion-header {
+            background-color: var(--light);
+            font-weight: 600;
+        }
+        
+        .visualization {
+            width: 100%;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .visualization img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .caption {
+            font-style: italic;
+            text-align: center;
+            margin-top: 0.5rem;
+            color: #666;
+        }
+        
+        .algorithm-steps {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .algorithm-steps ol {
+            margin-left: 1rem;
+        }
+        
+        .conclusion {
+            background-color: #e8f4fc;
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        
+        .github-link {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .github-link:hover {
+            background-color: var(--dark);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            section {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .results-container {
+                flex-direction: column;
+            }
+            
+            .confusion-matrix {
+                grid-template-columns: repeat(4, 1fr);
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav>
-            <div class="nav-container">
-                <h1 class="logo">ProjetOptiV3</h1>
-                <ul class="nav-links">
-                    <li><a href="#overview">Overview</a></li>
-                    <li><a href="#dataset">Dataset</a></li>
-                    <li><a href="#formulation">Formulation</a></li>
-                    <li><a href="#methods">Methods</a></li>
-                    <li><a href="#results">Results</a></li>
-                    <li><a href="#code">Code</a></li>
-                </ul>
+        <div class="container">
+            <h1>Projet d'Optimisation et Machine Learning</h1>
+            <p class="subtitle">Classificateur Multiclasse de la base de données UCI HAR</p>
+            <div class="authors">
+                <p>Membres : Charles Pilleur, Ancco Jhonatan</p>
             </div>
-        </nav>
-        <div class="hero">
-            <h1>Multiclass Classification with Optimization Methods</h1>
-            <p>Human Activity Recognition using Smartphones</p>
-            <p class="authors">Charles Pilleur & Ancco Jhonatan | December 2025</p>
         </div>
     </header>
-
-    <main>
-        <section id="overview" class="section">
-            <div class="container">
-                <h2><i class="fas fa-project-diagram"></i> Project Overview</h2>
-                <p>This project implements and compares optimization algorithms for multiclass classification on the UCI Human Activity Recognition dataset. We explore Forward-Backward splitting and ADMM methods with L1 regularization.</p>
-                
-                <div class="features">
-                    <div class="feature-card">
-                        <i class="fas fa-brain"></i>
-                        <h3>Machine Learning</h3>
-                        <p>Multiclass classification with 6 activity types</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-calculator"></i>
-                        <h3>Optimization</h3>
-                        <p>Forward-Backward and ADMM algorithms</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>Performance</h3>
-                        <p>Comparison of accuracy and convergence</p>
-                    </div>
-                </div>
-            </div>
+    
+    <main class="container">
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>Ce projet vise à développer un classificateur multiclasse pour la reconnaissance d'activités humaines à partir des données de capteurs de smartphones (base de données UCI HAR).</p>
+            <p>Les données proviennent de 30 volontaires effectuant 6 activités différentes (MARCHER, MARCHER EN MONTÉE, MARCHER EN DESCENTE, ASSIS, DEBOUT, COUCHÉ) avec un smartphone Samsung Galaxy S II attaché à la taille.</p>
+            <p>Le but est d'entraîner un modèle de classification supervisée capable de reconnaître automatiquement l'activité physique réalisée par un individu à partir des signaux des capteurs.</p>
         </section>
-
-        <section id="dataset" class="section bg-light">
-            <div class="container">
-                <h2><i class="fas fa-database"></i> Dataset</h2>
-                <p>The <strong>UCI HAR Dataset</strong> contains recordings from 30 volunteers (19-48 years) performing 6 activities:</p>
-                
-                <div class="activities">
-                    <span class="activity-tag">WALKING</span>
-                    <span class="activity-tag">WALKING_UPSTAIRS</span>
-                    <span class="activity-tag">WALKING_DOWNSTAIRS</span>
-                    <span class="activity-tag">SITTING</span>
-                    <span class="activity-tag">STANDING</span>
-                    <span class="activity-tag">LAYING</span>
-                </div>
-                
-                <div class="dataset-info">
-                    <div class="info-card">
-                        <h4>Data Structure</h4>
-                        <ul>
-                            <li><strong>Training samples:</strong> 7,352</li>
-                            <li><strong>Test samples:</strong> 2,947</li>
-                            <li><strong>Features:</strong> 561</li>
-                            <li><strong>Classes:</strong> 6</li>
-                        </ul>
-                    </div>
-                    <div class="info-card">
-                        <h4>Sensor Data</h4>
-                        <ul>
-                            <li>Triaxial acceleration</li>
-                            <li>Estimated body acceleration</li>
-                            <li>Triaxial angular velocity</li>
-                            <li>Time/frequency domain variables</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <a href="https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones" class="btn" target="_blank">
-                    <i class="fas fa-external-link-alt"></i> Access Dataset
-                </a>
-            </div>
-        </section>
-
-        <section id="formulation" class="section">
-            <div class="container">
-                <h2><i class="fas fa-square-root-alt"></i> Optimization Formulation</h2>
-                
-                <div class="formulation-card">
-                    <h3>Main Problem</h3>
-                    <div class="math-formula">
-                        \[
-                        \min_{x \in \mathbb{R}^{(M+1)K}} g(x) + \lambda h(x)
-                        \]
-                    </div>
-                    
-                    <div class="formula-details">
-                        <div class="detail">
-                            <h4>Loss Function \(h(x)\):</h4>
-                            \[
-                            h(x) = \sum_{\ell=1}^{L} \log \left( 1 + \sum_{k \neq \ell} \exp [\mu_\ell + \varphi(u_\ell)^T (x^{(k)} - x^{(z_\ell)})] \right)
-                            \]
-                        </div>
-                        
-                        <div class="detail">
-                            <h4>Regularization \(g(x)\):</h4>
-                            \[
-                            g(x) = \sum_{k=1}^{K} \| w^{(k)} \|_1
-                            \]
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="formulation-card">
-                    <h3>ADMM Reformulation</h3>
-                    <div class="math-formula">
-                        \[
-                        \min_{x,z} \lambda h(x) + g(z) \quad \text{s.t.} \quad x - z = 0
-                        \]
-                    </div>
-                    
-                    <div class="detail">
-                        <h4>Augmented Lagrangian:</h4>
-                        \[
-                        \mathcal{L}_{\rho}(x, z, u) = \lambda h(x) + g(z) + u^T(x - z) + \frac{\rho}{2}\|x - z\|_2^2
-                        \]
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="methods" class="section bg-light">
-            <div class="container">
-                <h2><i class="fas fa-code-branch"></i> Methods</h2>
-                
-                <div class="methods-grid">
-                    <div class="method-card">
-                        <div class="method-header">
-                            <i class="fas fa-forward"></i>
-                            <h3>Forward-Backward Algorithm</h3>
-                        </div>
-                        <p>Solves problems of the form:</p>
-                        <p class="math-inline">\(\min_x f(x) + g(x)\)</p>
-                        <ul>
-                            <li><strong>Step 1:</strong> Gradient descent on \(f(x)\)</li>
-                            <li><strong>Step 2:</strong> Proximal operator on \(g(x)\)</li>
-                            <li><strong>Parameters:</strong> \(\tau < \frac{2}{L_f}\)</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="method-card">
-                        <div class="method-header">
-                            <i class="fas fa-exchange-alt"></i>
-                            <h3>ADMM Algorithm</h3>
-                        </div>
-                        <p>Alternating Direction Method of Multipliers:</p>
-                        <ul>
-                            <li><strong>Step 1:</strong> Update \(x\) (smooth minimization)</li>
-                            <li><strong>Step 2:</strong> Update \(z\) (proximal operator)</li>
-                            <li><strong>Step 3:</strong> Update multiplier \(u\)</li>
-                            <li><strong>Parameter:</strong> \(\rho > 0\)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="results" class="section">
-            <div class="container">
-                <h2><i class="fas fa-chart-bar"></i> Results</h2>
-                
-                <div class="results-summary">
-                    <div class="result-card highlight">
-                        <h3>Forward-Backward</h3>
-                        <div class="accuracy">89.75%</div>
-                        <p>Test Accuracy</p>
-                        <div class="result-details">
-                            <p><strong>Objective:</strong> 475.08</p>
-                            <p><strong>Iterations:</strong> ~900</p>
-                        </div>
-                    </div>
-                    
-                    <div class="result-card">
-                        <h3>ADMM</h3>
-                        <div class="accuracy">88.70%</div>
-                        <p>Test Accuracy</p>
-                        <div class="result-details">
-                            <p><strong>Objective:</strong> ~694.81</p>
-                            <p><strong>Iterations:</strong> 200</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="confusion-matrix">
-                    <h3>Forward-Backward Confusion Matrix</h3>
-                    <div class="matrix-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>1</th>
-                                    <th>2</th>
-                                    <th>3</th>
-                                    <th>4</th>
-                                    <th>5</th>
-                                    <th>6</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="row-label">1</td>
-                                    <td class="correct">328</td><td>1</td><td>31</td><td>0</td><td>0</td><td>0</td>
-                                </tr>
-                                <tr>
-                                    <td class="row-label">2</td>
-                                    <td>9</td><td class="correct">284</td><td>20</td><td>0</td><td>0</td><td>0</td>
-                                </tr>
-                                <tr>
-                                    <td class="row-label">3</td>
-                                    <td>7</td><td>9</td><td class="correct">260</td><td>0</td><td>0</td><td>0</td>
-                                </tr>
-                                <tr>
-                                    <td class="row-label">4</td>
-                                    <td>0</td><td>2</td><td>0</td><td class="correct">252</td><td>76</td><td>0</td>
-                                </tr>
-                                <tr>
-                                    <td class="row-label">5</td>
-                                    <td>0</td><td>0</td><td>0</td><td>43</td><td class="correct">314</td><td>0</td>
-                                </tr>
-                                <tr>
-                                    <td class="row-label">6</td>
-                                    <td>0</td><td>0</td><td>0</td><td>0</td><td>7</td><td class="correct">357</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="caption">Classes: 1=Walking, 2=Upstairs, 3=Downstairs, 4=Sitting, 5=Standing, 6=Laying</p>
-                </div>
-                
-                <div class="weights-analysis">
-                    <h3>Non-zero Weights Analysis</h3>
-                    <div class="weights-grid">
-                        <div class="weight-item">
-                            <span class="class-name">Class 1 (Walking)</span>
-                            <div class="weight-bar">
-                                <div class="weight-fill" style="width: 64.7%">363/561 (64.7%)</div>
-                            </div>
-                        </div>
-                        <div class="weight-item">
-                            <span class="class-name">Class 2 (Upstairs)</span>
-                            <div class="weight-bar">
-                                <div class="weight-fill" style="width: 67.0%">376/561 (67.0%)</div>
-                            </div>
-                        </div>
-                        <div class="weight-item">
-                            <span class="class-name">Class 3 (Downstairs)</span>
-                            <div class="weight-bar">
-                                <div class="weight-fill" style="width: 66.7%">374/561 (66.7%)</div>
-                            </div>
-                        </div>
-                        <div class="weight-item">
-                            <span class="class-name">Class 4 (Sitting)</span>
-                            <div class="weight-bar">
-                                <div class="weight-fill" style="width: 44.4%">249/561 (44.4%)</div>
-                            </div>
-                        </div>
-                        <div class="weight-item">
-                            <span class="class-name">Class 5 (Standing)</span>
-                            <div class="weight-bar">
-                                <div class="weight-fill" style="width: 63.5%">356/561 (63.5%)</div>
-                            </div>
-                        </div>
-                        <div class="weight-item">
-                            <span class="class-name">Class 6 (Laying)</span>
-                            <div class="weight-bar">
-                                <div class="weight-fill" style="width: 52.9%">297/561 (52.9%)</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="code" class="section bg-light">
-            <div class="container">
-                <h2><i class="fas fa-code"></i> Code & Implementation</h2>
-                
-                <div class="code-links">
-                    <a href="ProjectOptV3.ipynb" class="code-card">
-                        <i class="fab fa-python"></i>
-                        <h3>Jupyter Notebook</h3>
-                        <p>Complete implementation with all algorithms</p>
-                    </a>
-                    
-                    <a href="https://github.com/JhAnCe25/ProjetOptiV3" class="code-card" target="_blank">
-                        <i class="fab fa-github"></i>
-                        <h3>GitHub Repository</h3>
-                        <p>Source code and project files</p>
-                    </a>
-                </div>
-                
-                <div class="code-snippet">
-                    <h3>Key Implementation</h3>
-                    <pre><code class="language-python">def forward_backward_algorithm(x0, X_train, y_train, lambda_reg, 
-                              tau, mu=1.0, max_iter=1000):
-    """Forward-Backward algorithm for multiclass classification"""
-    x = x0.copy()
-    for iteration in range(max_iter):
-        # Gradient step
-        grad = h_loss_gradient_vectorized(x, X_train, y_train, mu)
-        Z = x - tau * lambda_reg * grad
         
-        # Proximal step (soft-thresholding)
-        x = prox_soft_thresholding(Z, N, tau * lambda_reg)
+        <section id="methodology">
+            <h2>Méthodologie</h2>
+            <p>Nous avons implémenté et comparé deux algorithmes d'optimisation pour résoudre le problème de classification avec régularisation L1 :</p>
+            
+            <div class="algorithm-steps">
+                <h3>1. Algorithme de Condat (Forward-Backward)</h3>
+                <p>Formulation du problème :</p>
+                <div class="highlight">
+                    min<sub>x</sub> f(x) + g(x)<br>
+                    où f(x) = λ * h(x) (perte logistique différentiable)<br>
+                    et g(x) = Σ‖w<sup>(k)</sup>‖<sub>1</sub> (régularisation L1 non-différentiable)
+                </div>
+                <p>Étapes d'itération :</p>
+                <ol>
+                    <li>Mise à jour de x : p<sup>k+1</sup> = prox<sub>τg</sub>(x<sup>k</sup> - τ∇f(x<sup>k</sup>))</li>
+                    <li>Mise à jour avec relaxation : x<sup>k+1</sup> = x<sup>k</sup> + ρ(p<sup>k+1</sup> - x<sup>k</sup>)</li>
+                </ol>
+            </div>
+            
+            <div class="algorithm-steps">
+                <h3>2. Algorithme ADMM (Alternating Direction Method of Multipliers)</h3>
+                <p>Formulation avec variable auxiliaire :</p>
+                <div class="highlight">
+                    min<sub>x,z</sub> λh(x) + g(z)<br>
+                    s.c. x - z = 0
+                </div>
+                <p>Étapes d'itération :</p>
+                <ol>
+                    <li>Mise à jour de x : x<sup>t+1</sup> = argmin<sub>x</sub> [λh(x) + (ρ/2)‖x - z<sup>t</sup> + u<sup>t</sup>‖<sub>2</sub><sup>2</sup>]</li>
+                    <li>Mise à jour de z : z<sup>t+1</sup> = argmin<sub>z</sub> [g(z) + (ρ/2)‖x<sup>t+1</sup> - z + u<sup>t</sup>‖<sub>2</sub><sup>2</sup>]</li>
+                    <li>Mise à jour du multiplicateur : u<sup>t+1</sup> = u<sup>t</sup> + (x<sup>t+1</sup> - z<sup>t+1</sup>)</li>
+                </ol>
+            </div>
+        </section>
         
-        # Convergence check
-        if np.linalg.norm(x - x_old) < 1e-6:
-            break
-    return x</code></pre>
+        <section id="hyperparameters">
+            <h2>Hyperparamètres</h2>
+            <div class="results-container">
+                <div class="result-card">
+                    <h3>Paramètres communs</h3>
+                    <div class="metric">
+                        <span class="metric-name">λ (régularisation)</span>
+                        <span class="metric-value">1.0</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">μ (marge)</span>
+                        <span class="metric-value">1.0</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Nombre de classes</span>
+                        <span class="metric-value">6</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Taille des features</span>
+                        <span class="metric-value">560</span>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <h3>Paramètres Condat</h3>
+                    <div class="metric">
+                        <span class="metric-name">τ (pas)</span>
+                        <span class="metric-value">2.06e-6</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">ρ (relaxation)</span>
+                        <span class="metric-value">1.5</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Itérations</span>
+                        <span class="metric-value">2000</span>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <h3>Paramètres ADMM</h3>
+                    <div class="metric">
+                        <span class="metric-name">ρ (pénalité)</span>
+                        <span class="metric-value">1.0</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Itérations</span>
+                        <span class="metric-value">300</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Tolérance</span>
+                        <span class="metric-value">1e-4</span>
+                    </div>
                 </div>
             </div>
+        </section>
+        
+        <section id="results">
+            <h2>Résultats Finaux</h2>
+            
+            <div class="results-container">
+                <div class="result-card">
+                    <h3>Algorithme de Condat</h3>
+                    <div class="metric">
+                        <span class="metric-name">Précision globale</span>
+                        <span class="metric-value">93.72%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Valeur objectif finale</span>
+                        <span class="metric-value">2268.94</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">f(x) = perte logistique</span>
+                        <span class="metric-value">2070.68</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">g(x) = régularisation L1</span>
+                        <span class="metric-value">198.27</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Itérations</span>
+                        <span class="metric-value">2000</span>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <h3>Algorithme ADMM</h3>
+                    <div class="metric">
+                        <span class="metric-name">Précision globale</span>
+                        <span class="metric-value">94.93%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Valeur objectif finale</span>
+                        <span class="metric-value">1499.69</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Résidu primal</span>
+                        <span class="metric-value">0.0072</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Résidu dual</span>
+                        <span class="metric-value">0.0304</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-name">Itérations</span>
+                        <span class="metric-value">300</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Matrice de confusion (ADMM)</h3>
+            <div class="confusion-matrix">
+                <!-- Headers -->
+                <div class="confusion-cell confusion-header">Prédiction/Réelle</div>
+                <div class="confusion-cell confusion-header">MARCHER</div>
+                <div class="confusion-cell confusion-header">MONTÉE</div>
+                <div class="confusion-cell confusion-header">DESCENTE</div>
+                <div class="confusion-cell confusion-header">ASSIS</div>
+                <div class="confusion-cell confusion-header">DEBOUT</div>
+                <div class="confusion-cell confusion-header">COUCHÉ</div>
+                
+                <!-- Row 1: WALKING -->
+                <div class="confusion-cell confusion-header">MARCHER</div>
+                <div class="confusion-cell">491</div>
+                <div class="confusion-cell">1</div>
+                <div class="confusion-cell">4</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                
+                <!-- Row 2: WALKING_UPSTAIRS -->
+                <div class="confusion-cell confusion-header">MONTÉE</div>
+                <div class="confusion-cell">20</div>
+                <div class="confusion-cell">416</div>
+                <div class="confusion-cell">5</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                
+                <!-- Row 3: WALKING_DOWNSTAIRS -->
+                <div class="confusion-cell confusion-header">DESCENTE</div>
+                <div class="confusion-cell">8</div>
+                <div class="confusion-cell">22</div>
+                <div class="confusion-cell">373</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                
+                <!-- Row 4: SITTING -->
+                <div class="confusion-cell confusion-header">ASSIS</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">3</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">430</div>
+                <div class="confusion-cell">57</div>
+                <div class="confusion-cell">1</div>
+                
+                <!-- Row 5: STANDING -->
+                <div class="confusion-cell confusion-header">DEBOUT</div>
+                <div class="confusion-cell">1</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">25</div>
+                <div class="confusion-cell">506</div>
+                <div class="confusion-cell">0</div>
+                
+                <!-- Row 6: LAYING -->
+                <div class="confusion-cell confusion-header">COUCHÉ</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">0</div>
+                <div class="confusion-cell">537</div>
+            </div>
+            <p class="caption">La matrice montre d'excellentes performances, en particulier pour la classe "COUCHÉ" qui est parfaitement classifiée.</p>
+            
+            <h3>Rapport de classification (ADMM)</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Classe</th>
+                        <th>Précision</th>
+                        <th>Rappel</th>
+                        <th>F1-score</th>
+                        <th>Support</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MARCHER (1.0)</td>
+                        <td>0.94</td>
+                        <td>0.99</td>
+                        <td>0.97</td>
+                        <td>496</td>
+                    </tr>
+                    <tr>
+                        <td>MONTÉE (2.0)</td>
+                        <td>0.94</td>
+                        <td>0.94</td>
+                        <td>0.94</td>
+                        <td>441</td>
+                    </tr>
+                    <tr>
+                        <td>DESCENTE (3.0)</td>
+                        <td>0.98</td>
+                        <td>0.93</td>
+                        <td>0.95</td>
+                        <td>403</td>
+                    </tr>
+                    <tr>
+                        <td>ASSIS (4.0)</td>
+                        <td>0.95</td>
+                        <td>0.88</td>
+                        <td>0.91</td>
+                        <td>491</td>
+                    </tr>
+                    <tr>
+                        <td>DEBOUT (5.0)</td>
+                        <td>0.90</td>
+                        <td>0.95</td>
+                        <td>0.92</td>
+                        <td>532</td>
+                    </tr>
+                    <tr>
+                        <td>COUCHÉ (6.0)</td>
+                        <td>1.00</td>
+                        <td>1.00</td>
+                        <td>1.00</td>
+                        <td>537</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Moyenne</strong></td>
+                        <td><strong>0.95</strong></td>
+                        <td><strong>0.95</strong></td>
+                        <td><strong>0.95</strong></td>
+                        <td><strong>2900</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+        
+        <section id="comparison">
+            <h2>Comparaison des Méthodes</h2>
+            
+            <div class="visualization">
+                <h3>Évolution de la précision avec différents ρ (Condat)</h3>
+                <p>Cette visualisation montre comment le paramètre de relaxation ρ affecte la convergence de l'algorithme de Condat.</p>
+                <div style="background-color: #f0f0f0; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <!-- Espace pour visualisation -->
+                    <div style="text-align: left; padding: 15px; background-color: white; border-radius: 5px;">
+                        <h4>Résultats observés :</h4>
+                        <ul>
+                            <li><strong>ρ = 0.5</strong> : Convergence lente, précision finale 87.24%</li>
+                            <li><strong>ρ = 1.0</strong> : Convergence modérée, précision finale 88.90%</li>
+                            <li><strong>ρ = 1.5</strong> : Convergence rapide, précision finale 90.59%</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="caption">Le paramètre ρ = 1.5 donne la meilleure convergence et performance pour l'algorithme de Condat.</p>
+            </div>
+            
+            <div class="visualization">
+                <h3>Comparaison des performances ADMM avec différents ρ</h3>
+                <p>Impact du paramètre de pénalité ρ sur la convergence de l'algorithme ADMM.</p>
+                <div style="background-color: #f0f0f0; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <!-- Espace pour visualisation -->
+                    <div style="text-align: left; padding: 15px; background-color: white; border-radius: 5px;">
+                        <h4>Résultats observés :</h4>
+                        <ul>
+                            <li><strong>ρ = 0.01</strong> : Convergence lente, oscillations, précision finale 95.03%</li>
+                            <li><strong>ρ = 1.0</strong> : Bon équilibre convergence/stabilité, précision finale 94.93%</li>
+                            <li><strong>ρ = 5.0</strong> : Convergence rapide, précision finale 94.93%</li>
+                            <li><strong>ρ = 10.0</strong> : Convergence très rapide, précision finale 94.93%</li>
+                            <li><strong>ρ = 20.0</strong> : Convergence rapide, précision finale 94.93%</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="caption">ADMM montre une robustesse au paramètre ρ, avec des performances similaires pour ρ ≥ 1.0.</p>
+            </div>
+            
+            <h3>Synthèse comparative</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Critère</th>
+                        <th>Algorithme de Condat</th>
+                        <th>Algorithme ADMM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Précision globale</td>
+                        <td>93.72%</td>
+                        <td><strong>94.93%</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Valeur objectif finale</td>
+                        <td>2268.94</td>
+                        <td><strong>1499.69</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Itérations nécessaires</td>
+                        <td>2000</td>
+                        <td><strong>300</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Temps de convergence</td>
+                        <td>Plus lent</td>
+                        <td><strong>Plus rapide</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Simplicité d'implémentation</td>
+                        <td><strong>Plus simple</strong></td>
+                        <td>Plus complexe</td>
+                    </tr>
+                    <tr>
+                        <td>Robustesse aux paramètres</td>
+                        <td>Sensible à ρ</td>
+                        <td><strong>Robuste à ρ ≥ 1.0</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <section id="conclusion" class="conclusion">
+            <h2>Conclusion</h2>
+            <p>Les deux algorithmes d'optimisation ont produit des classificateurs performants pour la reconnaissance d'activités humaines à partir des données UCI HAR :</p>
+            <ul>
+                <li>L'<strong>algorithme de Condat</strong> a atteint une précision de 93.72% après 2000 itérations, démontrant une convergence stable mais lente.</li>
+                <li>L'<strong>algorithme ADMM</strong> a obtenu une meilleure précision (94.93%) en seulement 300 itérations, avec une valeur objectif finale plus basse, indiquant une meilleure optimisation.</li>
+                <li>Les deux méthodes montrent d'excellentes performances sur la classe "COUCHÉ" (100% de précision et rappel).</li>
+                <li>La régularisation L1 a permis d'obtenir un modèle parcimonieux, avec seulement 198.27 de régularisation pour Condat.</li>
+            </ul>
+            <p>Dans l'ensemble, <strong>ADMM s'est avéré plus efficace</strong> pour ce problème, offrant une meilleure précision avec moins d'itérations, bien que son implémentation soit plus complexe que celle de Condat.</p>
         </section>
     </main>
-
+    
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>ProjetOptiV3</h3>
-                    <p>Optimization Methods for Machine Learning</p>
-                    <p>Université Paris-Saclay</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Team</h3>
-                    <ul>
-                        <li>Charles Pilleur</li>
-                        <li>Ancco Jhonatan</li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Links</h3>
-                    <ul>
-                        <li><a href="ProjectOptV3.ipynb">Download Notebook</a></li>
-                        <li><a href="https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones">Dataset</a></li>
-                        <li><a href="#formulation">Mathematical Formulation</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 ProjetOptiV3. All rights reserved.</p>
-                <p>Last updated: December 2025</p>
-            </div>
+            <p>Projet d'Optimisation et Machine Learning - Classificateur Multiclasse UCI HAR</p>
+            <p>Université Paris-Saclay | Année 2023-2024</p>
+            <a href="https://github.com/votre-utilisateur/votre-repo" class="github-link" target="_blank">
+                Voir le code sur GitHub
+            </a>
         </div>
     </footer>
-
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Update active nav link on scroll
-        window.addEventListener('scroll', function() {
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('.nav-links a');
-            
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if(scrollY >= (sectionTop - 100)) {
-                    current = section.getAttribute('id');
-                }
-            });
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if(link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
