@@ -583,7 +583,17 @@
                 <img src="images/admm_comparison.png" alt="Comparaison des performances ADMM avec différents paramètres ρ">
                 <p class="caption">ADMM montre une robustesse au paramètre ρ, avec des performances similaires pour ρ ≥ 1.0.</p>
                             <div class="visualization">
-                <h3>Comparaison des temps de calcul : Condat vs ADMM</h3>
+            </div>
+            <div class="visualization">
+                <h2>Visualisations Additionnelles</h2>
+                <h3>Analyse de convergence ADMM détaillée</h3>
+                <img src="images/admm_alphaproche.png" alt="ADMM convergence analysis">
+                <p class="caption">Analyse approfondie montrant l'impact du paramètre inner_alpha sur la vitesse de convergence de l'algorithme ADMM avec ρ fixé à 20.0.</p>
+            </div>    
+            
+
+    <section id="visualizations">
+        <h3>Comparaison des temps de calcul : Condat vs ADMM</h3>
                 <img src="images/comp_time.png" alt="Comparaison des temps de calcul entre Condat et ADMM">
                 <p class="caption">Comparaison de la précision en fonction du temps écoulé. ADMM atteint une précision élevée plus rapidement que Condat.</p>
             </div>
@@ -596,16 +606,7 @@
                 <li>ADMM converge vers sa précision maximale (∼95%) en moins de 40 secondes</li>
                 <li>Condat montre une convergence plus lente et progressive sur 70 secondes</li>
             </ul>
-            </div>
-
-    <section id="visualizations">
-        <h2>Visualisations Additionnelles</h2>
-    
-        <div class="visualization">
-            <h3>Analyse de convergence ADMM détaillée</h3>
-            <img src="images/admm_alphaproche.png" alt="ADMM convergence analysis">
-            <p class="caption">Analyse approfondie montrant l'impact du paramètre inner_alpha sur la vitesse de convergence de l'algorithme ADMM avec ρ fixé à 20.0.</p>
-        </div>
+        
     </section>
             
             <h3>Synthèse comparative</h3>
