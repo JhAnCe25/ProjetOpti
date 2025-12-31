@@ -574,37 +574,13 @@
             
             <div class="visualization">
                 <h3>Évolution de la précision avec différents ρ (Condat)</h3>
-                <p>Cette visualisation montre comment le paramètre de relaxation ρ affecte la convergence de l'algorithme de Condat.</p>
-                <div style="background-color: #f0f0f0; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                    <!-- Espace pour visualisation -->
-                    <div style="text-align: left; padding: 15px; background-color: white; border-radius: 5px;">
-                        <h4>Résultats observés :</h4>
-                        <ul>
-                            <li><strong>ρ = 0.5</strong> : Convergence lente, précision finale 87.24%</li>
-                            <li><strong>ρ = 1.0</strong> : Convergence modérée, précision finale 88.90%</li>
-                            <li><strong>ρ = 1.5</strong> : Convergence rapide, précision finale 90.59%</li>
-                        </ul>
-                    </div>
-                </div>
-                <p class="caption">Le paramètre ρ = 1.5 donne la meilleure convergence et performance pour l'algorithme de Condat.</p>
+                <img src="images/condat_convergence.png" alt="Évolution de la précision avec différents ρ pour l'algorithme de Condat">
+                <p class="caption">Évolution de la précision avec ρ = 0.5 (convergence lente), ρ = 1.0 (convergence modérée), ρ = 1.5 (convergence rapide).</p>
             </div>
             
             <div class="visualization">
                 <h3>Comparaison des performances ADMM avec différents ρ</h3>
-                <p>Impact du paramètre de pénalité ρ sur la convergence de l'algorithme ADMM.</p>
-                <div style="background-color: #f0f0f0; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                    <!-- Espace pour visualisation -->
-                    <div style="text-align: left; padding: 15px; background-color: white; border-radius: 5px;">
-                        <h4>Résultats observés :</h4>
-                        <ul>
-                            <li><strong>ρ = 0.01</strong> : Convergence lente, oscillations, précision finale 95.03%</li>
-                            <li><strong>ρ = 1.0</strong> : Bon équilibre convergence/stabilité, précision finale 94.93%</li>
-                            <li><strong>ρ = 5.0</strong> : Convergence rapide, précision finale 94.93%</li>
-                            <li><strong>ρ = 10.0</strong> : Convergence très rapide, précision finale 94.93%</li>
-                            <li><strong>ρ = 20.0</strong> : Convergence rapide, précision finale 94.93%</li>
-                        </ul>
-                    </div>
-                </div>
+                <img src="images/admm_comparison.png" alt="Comparaison des performances ADMM avec différents paramètres ρ">
                 <p class="caption">ADMM montre une robustesse au paramètre ρ, avec des performances similaires pour ρ ≥ 1.0.</p>
             </div>
             
@@ -668,7 +644,7 @@
     <footer>
         <div class="container">
             <p>Projet d'Optimisation et Machine Learning - Classificateur Multiclasse UCI HAR</p>
-            <p>Université Paris-Saclay | Année 2023-2024</p>
+            <p>Université Lyon 1 | Année 2025-2026</p>
             <a href="https://github.com/votre-utilisateur/votre-repo" class="github-link" target="_blank">
                 Voir le code sur GitHub
             </a>
